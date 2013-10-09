@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:soapui-actions xmlns:tns="http://eviware.com/soapui/config">
+    <tns:actionGroup name="Write file test step actions"
+                     id="WriteFileTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+    <tns:actionGroup name="Write socket test step actions"
+                     id="WriteSocketTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+    <tns:actionGroup name="Read file test step actions"
+                     id="ReadFileTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+    <tns:actionGroup name="Transform text test step actions"
+                     id="TransformTextTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+    <tns:actionGroup name="Transform text test step actions"
+                     id="FindFileTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+    <tns:actionGroup name="Transform text test step actions"
+                     id="JdbcRequestWithRetryTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+</tns:soapui-actions>

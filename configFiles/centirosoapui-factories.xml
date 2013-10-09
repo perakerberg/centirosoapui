@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:soapui-factories xmlns:tns="http://eviware.com/soapui/config">
+    <tns:factory id="writefile"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.io.writefile.WriteFileTestFactory"/>
+
+    <tns:factory id="WriteFilePanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.io.writefile.WriteFileTestStepPanelBuilderFactory"/>
+
+    <tns:factory id="WriteSocket"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.io.writesocket.WriteSocketTestFactory"/>
+    <tns:factory id="WriteSocketPanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.io.writesocket.WriteSocketTestStepPanelBuilderFactory"/>
+
+    <tns:factory id="readfile"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.io.readfile.ReadFileTestStepFactory"/>
+    <tns:factory id="ReadFilePanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.io.readfile.ReadFileTestStepPanelBuilderFactory"/>
+
+    <tns:factory id="transformtext"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.text.transform.TransformTextTestStepFactory"/>
+    <tns:factory id="TransformTextPanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.text.transform.TransformTextTestStepPanelBuilderFactory"/>
+
+    <tns:factory id="findfile"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.io.findfile.FindFileTestStepFactory"/>
+    <tns:factory id="FindFilePanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.io.findfile.FindFileTestStepPanelBuilderFactory"/>
+
+    <tns:factory id="jdbcrequestwithretry"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.adapted.JdbcRequestWithRetryTestStepFactory"/>
+    <tns:factory id="jdbcrequestwithretrypanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.adapted.JdbcRequestWithRetryTestStepPanelBuilderFactory"/>
+
+</tns:soapui-factories>
