@@ -28,9 +28,6 @@ import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 
 import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 
 public class FindFileTestStep extends TestStepBase {
 
@@ -100,8 +97,8 @@ public class FindFileTestStep extends TestStepBase {
 
         while(!found && waitedMilliseconds<(maxWaitTimeSeconds*1000))
         {
-                Path path = Paths.get(primarySourcePath);
-                File[] filesThatMatch = path.toFile().listFiles(new StringContainsFileFilter(
+                File primarySourceFolder = new File(primarySourcePath);
+                File[] filesThatMatch = primarySourceFolder.listFiles(new StringContainsFileFilter(
                         expandPropertyValue(context, FILE_CONTAINS).split("\\n")));
                 found = filesThatMatch.length>0;
                 waitedMilliseconds+=200;
@@ -114,8 +111,8 @@ public class FindFileTestStep extends TestStepBase {
             if (secondaryPath!=null && !secondaryPath.equals(""))
             {
                 usedSecondaryPath = true;
-                Path path = Paths.get(secondaryPath);
-                File[] filesThatMatch = path.toFile().listFiles(new StringContainsFileFilter(
+                File secondaryFolder = new File(secondaryPath);
+                File[] filesThatMatch = secondaryFolder.listFiles(new StringContainsFileFilter(
                         expandPropertyValue(context, FILE_CONTAINS).split("\\n")));
                 found = filesThatMatch.length>0;
             }

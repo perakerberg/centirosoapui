@@ -1,4 +1,3 @@
-
 /*
  * Copyright 2013 Centiro
  *
@@ -17,34 +16,27 @@
 
 package centiro.soapui.util;
 
+
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Scanner;
 
-public class StringContainsFileFilter implements FileFilter
-{
-    private String[] stringsToContain;
+public class FileContentReader {
 
-    public StringContainsFileFilter(String[] stringsToContain)
-    {
-        this.stringsToContain = stringsToContain;
-    }
-    @Override
-    public boolean accept(File file) {
-        String content;
-        if (file.isDirectory())
-            return false;
+    public static String readAllText(String pathname) throws IOException {
+
+        File file = new File(pathname);
+        StringBuilder fileContents = new StringBuilder((int)file.length());
+        Scanner scanner = new Scanner(file);
+        String lineSeparator = System.getProperty("line.separator");
 
         try {
-            content = FileContentReader.readAllText(file.getPath());
-        } catch (IOException e) {
-            return false;
+            while(scanner.hasNextLine()) {
+                fileContents.append(scanner.nextLine()).append(lineSeparator);
+            }
+            return fileContents.toString();
+        } finally {
+            scanner.close();
         }
-        for(String stringToContain : stringsToContain)
-        {
-            if (!content.contains(stringToContain))
-                return false;
-        }
-        return true;
     }
 }

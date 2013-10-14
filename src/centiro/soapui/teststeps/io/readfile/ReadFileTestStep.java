@@ -19,14 +19,13 @@ package centiro.soapui.teststeps.io.readfile;
 
 import centiro.soapui.teststeps.IconFileNames;
 import centiro.soapui.teststeps.base.TestStepBase;
+import centiro.soapui.util.FileContentReader;
 import com.eviware.soapui.config.TestStepConfig;
 import com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase;
 import com.eviware.soapui.model.support.DefaultTestStepProperty;
 import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 public class ReadFileTestStep extends TestStepBase {
 
@@ -66,7 +65,7 @@ public class ReadFileTestStep extends TestStepBase {
         if (sourceFileName==null || sourceFileName.equals(""))
             throw new Exception("Source file name not set!");
 
-        content = new String(Files.readAllBytes(Paths.get(sourceFileName)));
+        content = FileContentReader.readAllText(sourceFileName);
 
         setPropertyAndNotifyChange("result",content);
     }
