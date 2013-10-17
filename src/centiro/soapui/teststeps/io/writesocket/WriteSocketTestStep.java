@@ -17,8 +17,8 @@
 
 package centiro.soapui.teststeps.io.writesocket;
 
-import centiro.soapui.teststeps.base.TestStepBase;
 import centiro.soapui.teststeps.IconFileNames;
+import centiro.soapui.teststeps.base.TestStepBase;
 import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.config.TestStepConfig;
 import com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase;
@@ -27,7 +27,7 @@ import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 
 import java.io.PrintWriter;
-import java.net.*;
+import java.net.Socket;
 
 public class WriteSocketTestStep extends TestStepBase {
 
@@ -76,6 +76,7 @@ public class WriteSocketTestStep extends TestStepBase {
         SoapUI.log(String.format("Connected to host %s, post %s", host, port));
         writer = new PrintWriter(socket.getOutputStream(), true);
         writeMessage(writer, expandPropertyValue(context, CONTENT),getPropertyValueAsBool(USE_STXETX));
+
         writer.close();
         socket.close();
         SoapUI.log(String.format("Socket closed."));
@@ -86,6 +87,7 @@ public class WriteSocketTestStep extends TestStepBase {
         if ( message==null || message.isEmpty())
             throw new Exception("Nothing to send!");
 
+        message = message.replace("\n","");
         if (useStxEtx)
         {
             writer.print(SocketMessageParts.rsStartOfTransmission);

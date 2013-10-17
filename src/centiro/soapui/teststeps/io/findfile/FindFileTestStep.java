@@ -35,8 +35,9 @@ public class FindFileTestStep extends TestStepBase {
     public static final String SECONDARY_SOURCE_PATH = "secondarySourcePath";
     public static final String FILE_CONTAINS = "fileContains";
     public static final String MAX_WAIT_TIME = "maxWaitTime";
-
+    public static final String ENCODING = "encoding";
     public static final String RESULT = "result";
+    public static final String FILEMASK = "filemask";
 
     public FindFileTestStep(WsdlTestCase testCase, TestStepConfig config, boolean hasEditor, boolean forLoadTest) {
         super(testCase, config, hasEditor, forLoadTest);
@@ -54,6 +55,8 @@ public class FindFileTestStep extends TestStepBase {
         addProperty(new DefaultTestStepProperty(SECONDARY_SOURCE_PATH,false,this),true);
         addProperty(new DefaultTestStepProperty(FILE_CONTAINS,false,this),true);
         addProperty(new DefaultTestStepProperty(MAX_WAIT_TIME,false,this),true);
+        addProperty(new DefaultTestStepProperty(ENCODING,false,this),true);
+        addProperty(new DefaultTestStepProperty(FILEMASK,false,this),true);
     }
 
     private int getMaxWaitTime()
@@ -72,7 +75,6 @@ public class FindFileTestStep extends TestStepBase {
         }
     }
 
-
     protected String getFailedIconFileName()
     {
         return IconFileNames.FIND_FILE_ERROR;
@@ -86,23 +88,19 @@ public class FindFileTestStep extends TestStepBase {
     @Override
     protected void customRun(TestCaseRunner testCaseRunner, TestCaseRunContext context) throws Exception {
 
-        String primarySourcePath = expandPropertyValue(context, PRIMARY_SOURCE_PATH);
-        if (primarySourcePath==null || primarySourcePath.equals(""))
-            throw new Exception("Source path 1 name not set!");
+        String primarySourcePath = getPrimarySourcePath(context);
+        String encoding = getEncoding(context);
 
-        int waitedMilliseconds = 0;
+        int waitedMilliseconds = -1;  //To allow the first attempt to go through even if wait time = 0
         Boolean found = false;
         int maxWaitTimeSeconds = getMaxWaitTime();
         Boolean usedSecondaryPath = false;
 
         while(!found && waitedMilliseconds<(maxWaitTimeSeconds*1000))
         {
-                File primarySourceFolder = new File(primarySourcePath);
-                File[] filesThatMatch = primarySourceFolder.listFiles(new StringContainsFileFilter(
-                        expandPropertyValue(context, FILE_CONTAINS).split("\\n")));
-                found = filesThatMatch.length>0;
-                waitedMilliseconds+=200;
-                Thread.sleep(200);
+            found = matchingFileExists(context, encoding, new File(primarySourcePath));
+            waitedMilliseconds+=200;
+            Thread.sleep(200);
         }
 
         if (!found)
@@ -111,25 +109,39 @@ public class FindFileTestStep extends TestStepBase {
             if (secondaryPath!=null && !secondaryPath.equals(""))
             {
                 usedSecondaryPath = true;
-                File secondaryFolder = new File(secondaryPath);
-                File[] filesThatMatch = secondaryFolder.listFiles(new StringContainsFileFilter(
-                        expandPropertyValue(context, FILE_CONTAINS).split("\\n")));
-                found = filesThatMatch.length>0;
+                found = matchingFileExists(context, encoding, new File(secondaryPath));
             }
 
             if (!found)
-            {
-                String message = "File not found (waited %s seconds). Searched %s";
-
-                throw new Exception(String.format(message,waitedMilliseconds/1000,
+                throw new Exception(String.format("File not found (waited %s seconds). Searched %s",waitedMilliseconds/1000,
                         usedSecondaryPath ? "primary and secondary path" : "primary path"));
-            }
             else
-            {
                 SoapUI.log(String.format("Found file after %s seconds in the %s path", waitedMilliseconds/1000, usedSecondaryPath));
-            }
         }
 
+    }
+
+    private Boolean matchingFileExists(TestCaseRunContext context, String encoding, File folder) {
+        return folder.listFiles(new StringContainsFileFilter(
+                            expandPropertyValue(context, FILE_CONTAINS).split("\\n"),encoding,
+                            expandPropertyValue(context, FILEMASK))).length>0;
+    }
+
+    private String getPrimarySourcePath(TestCaseRunContext context) throws Exception {
+        String primarySourcePath = expandPropertyValue(context, PRIMARY_SOURCE_PATH);
+        if (primarySourcePath==null || primarySourcePath.equals(""))
+            throw new Exception("Source path 1 name not set!");
+        return primarySourcePath;
+    }
+
+    private String getEncoding(TestCaseRunContext context) {
+        String encoding = expandPropertyValue(context, ENCODING);
+        if (encoding==null || encoding.equals(""))
+        {
+            encoding = "UTF-8";
+            SoapUI.log("Assuming UTF-8 encoding since none was specified");
+        }
+        return encoding;
     }
 }
 

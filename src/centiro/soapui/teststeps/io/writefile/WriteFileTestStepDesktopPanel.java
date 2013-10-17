@@ -17,6 +17,8 @@
 
 package centiro.soapui.teststeps.io.writefile;
 
+import centiro.soapui.ui.ComponentFactory;
+import centiro.soapui.ui.JCaptionedComboBoxWithListener;
 import com.eviware.soapui.support.DocumentListenerAdapter;
 import com.eviware.soapui.support.components.JUndoableTextArea;
 import com.eviware.soapui.support.components.JUndoableTextField;
@@ -34,11 +36,10 @@ import java.beans.PropertyChangeEvent;
 
 public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFileTestStep>
 {
-
-
     private JUndoableTextField targetPathField;
     private JUndoableTextArea contentField;
     private JUndoableTextField waitTimeField;
+    private JCaptionedComboBoxWithListener encodingComboBox;
 
     public WriteFileTestStepDesktopPanel(WriteFileTestStep modelItem)
 	{
@@ -136,6 +137,11 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
         PropertyExpansionPopupListener.enable(waitTimeField, getModelItem());
         builder.addFixed(waitTimeField);
 
+        builder.addUnrelatedGap();
+
+        encodingComboBox = ComponentFactory.CreateEncodingComboBoxWithCaption("Encoding", true, getModelItem(), WriteFileTestStep.ENCODING);
+        builder.addFixed(encodingComboBox.getComponent());
+
 
         JPanel panel =  builder.getPanel();
         panel.setMaximumSize(panel.getPreferredSize());
@@ -162,5 +168,7 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
             if (!newValue.equals(waitTimeField.getText()))
                 waitTimeField.setText(newValue);
         }
+        else encodingComboBox.HandlePropertyChanged(evt.getPropertyName(),evt.getNewValue());
+
     }
 }

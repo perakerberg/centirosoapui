@@ -95,9 +95,7 @@ public abstract class TestStepBase extends WsdlTestStepWithProperties {
         try
         {
             customRun(testCaseRunner, context);
-
             setIcon(new ImageIcon(getSucceededIconFileName()));
-
             result.setStatus( TestStepResult.TestStepStatus.OK );
         }
         catch( Exception ex )
@@ -106,7 +104,6 @@ public abstract class TestStepBase extends WsdlTestStepWithProperties {
             result.setError( ex );
             result.setStatus( TestStepResult.TestStepStatus.FAILED );
             setIcon(new ImageIcon(getFailedIconFileName()));
-
         }
 
         result.stopTimer();

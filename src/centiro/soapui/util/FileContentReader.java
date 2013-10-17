@@ -17,26 +17,29 @@
 package centiro.soapui.util;
 
 
-import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Scanner;
+import java.io.InputStreamReader;
 
 public class FileContentReader {
 
-    public static String readAllText(String pathname) throws IOException {
+    public static String readAllText(String fileName, String encoding) throws IOException {
+        FileInputStream instr = new FileInputStream(fileName);
+        InputStreamReader instrR = new InputStreamReader(instr,encoding);
+        BufferedReader br = new BufferedReader(instrR);
+            try {
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
 
-        File file = new File(pathname);
-        StringBuilder fileContents = new StringBuilder((int)file.length());
-        Scanner scanner = new Scanner(file);
-        String lineSeparator = System.getProperty("line.separator");
-
-        try {
-            while(scanner.hasNextLine()) {
-                fileContents.append(scanner.nextLine()).append(lineSeparator);
+                while (line != null) {
+                    sb.append(line);
+                    sb.append("\n");
+                    line = br.readLine();
+                }
+                return sb.toString();
+            } finally {
+                br.close();
             }
-            return fileContents.toString();
-        } finally {
-            scanner.close();
-        }
     }
 }

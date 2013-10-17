@@ -17,6 +17,8 @@
 
 package centiro.soapui.teststeps.io.readfile;
 
+import centiro.soapui.ui.ComponentFactory;
+import centiro.soapui.ui.JCaptionedComboBoxWithListener;
 import com.eviware.soapui.support.DocumentListenerAdapter;
 import com.eviware.soapui.support.components.JUndoableTextField;
 import com.eviware.soapui.support.propertyexpansion.PropertyExpansionPopupListener;
@@ -33,6 +35,7 @@ import java.beans.PropertyChangeEvent;
 public class ReadFileTestStepDesktopPanel extends ModelItemDesktopPanel<ReadFileTestStep>
 {
     private JUndoableTextField sourceFileField;
+    private JCaptionedComboBoxWithListener encodingComboBox;
 
     public ReadFileTestStepDesktopPanel(ReadFileTestStep modelItem)
     {
@@ -79,6 +82,12 @@ public class ReadFileTestStepDesktopPanel extends ModelItemDesktopPanel<ReadFile
         });
         builder.addFixed(browseButton);
 
+        builder.addUnrelatedGap();
+        encodingComboBox = ComponentFactory.CreateEncodingComboBoxWithCaption("Encoding", true, getModelItem(), ReadFileTestStep.ENCODING);
+
+        builder.addFixed(encodingComboBox.getComponent());
+
+
         JPanel panel =  builder.getPanel();
         panel.setMaximumSize(panel.getPreferredSize());
         return panel;
@@ -94,5 +103,8 @@ public class ReadFileTestStepDesktopPanel extends ModelItemDesktopPanel<ReadFile
             if (!newValue.equals(sourceFileField.getText()))
                 sourceFileField.setText(newValue);
         }
+        else encodingComboBox.HandlePropertyChanged(evt.getPropertyName(), evt.getNewValue());
+
+
     }
 }

@@ -19,15 +19,15 @@ package centiro.soapui.teststeps.io.writefile;
 
 import centiro.soapui.teststeps.IconFileNames;
 import centiro.soapui.teststeps.base.TestStepBase;
+import centiro.soapui.util.FileContentWriter;
+import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.config.TestStepConfig;
 import com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase;
 import com.eviware.soapui.model.support.DefaultTestStepProperty;
 import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
+import java.io.*;
 import java.util.UUID;
 
 
@@ -37,6 +37,7 @@ public class WriteFileTestStep extends TestStepBase
     public static final String CONTENTS = "contents";
     public static final String WAIT_SECONDS_TO_BE_DELETED = "waitBeforeDelete";
     public static final String FILE_NAME = "filename";
+    public static final String ENCODING = "encoding";
 
 
     protected WriteFileTestStep(WsdlTestCase testCase, TestStepConfig config,  boolean forLoadTest) {
@@ -65,6 +66,7 @@ public class WriteFileTestStep extends TestStepBase
         addProperty(new DefaultTestStepProperty( CONTENTS, false, this), true);
         addProperty(new DefaultTestStepProperty( TARGET_PATH, false, this), true);
         addProperty(new DefaultTestStepProperty( WAIT_SECONDS_TO_BE_DELETED, false, this), true);
+        addProperty(new DefaultTestStepProperty( ENCODING, false, this), true);
     }
 
     private int getWaitTimeToBeDeleted()
@@ -85,20 +87,12 @@ public class WriteFileTestStep extends TestStepBase
 
     @Override
     protected void customRun(TestCaseRunner testCaseRunner, TestCaseRunContext context) throws Exception {
-        String targetPath = expandPropertyValue(context, TARGET_PATH);
-        if (targetPath==null || targetPath.equals(""))
-            throw new Exception("Target path must be set");
-
-        String message =expandPropertyValue(context, CONTENTS);
-        if (message == null || message.isEmpty())
-        {
-            throw new Exception("Nothing to write");
-        }
+        String targetPath = getTargetPath(context);
+        String content = getContent(context);
+        String encoding = getEncoding(context);
 
         String targetFileName =   targetPath + "\\" + UUID.randomUUID().toString() + ".xml";
-        BufferedWriter bw = new BufferedWriter(new FileWriter(targetFileName));
-        bw.write(message);
-        bw.close();
+        FileContentWriter.writeAllText(targetFileName, content, encoding);
         setPropertyAndNotifyChange(FILE_NAME, targetFileName);
 
         int waitSeconds = getWaitTimeToBeDeleted();
@@ -115,9 +109,33 @@ public class WriteFileTestStep extends TestStepBase
             }
             if (stillExists)
                 throw new Exception(String.format("File was not deleted after waiting the maximum of %s seconds", waitSeconds));
-
         }
+    }
 
+    private String getEncoding(TestCaseRunContext context) {
+        String encoding =expandPropertyValue(context, ENCODING);
+        if (encoding == null || encoding.isEmpty())
+        {
+            encoding = "UTF-8";
+            SoapUI.log("Assuming UTF-8, since no encoding was specified");
+        }
+        return encoding;
+    }
+
+    private String getContent(TestCaseRunContext context) throws Exception {
+        String message =expandPropertyValue(context, CONTENTS);
+        if (message == null || message.isEmpty())
+        {
+            throw new Exception("Nothing to write");
+        }
+        return message;
+    }
+
+    private String getTargetPath(TestCaseRunContext context) throws Exception {
+        String targetPath = expandPropertyValue(context, TARGET_PATH);
+        if (targetPath==null || targetPath.equals(""))
+            throw new Exception("Target path must be set");
+        return targetPath;
     }
 }
 

@@ -20,6 +20,7 @@ package centiro.soapui.teststeps.io.readfile;
 import centiro.soapui.teststeps.IconFileNames;
 import centiro.soapui.teststeps.base.TestStepBase;
 import centiro.soapui.util.FileContentReader;
+import com.eviware.soapui.SoapUI;
 import com.eviware.soapui.config.TestStepConfig;
 import com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase;
 import com.eviware.soapui.model.support.DefaultTestStepProperty;
@@ -31,6 +32,7 @@ public class ReadFileTestStep extends TestStepBase {
 
     public static final String SOURCE_FILE = "sourceFile";
     public static final String RESULT = "result";
+    public static final String ENCODING = "encoding";
 
     public ReadFileTestStep(WsdlTestCase testCase, TestStepConfig config, boolean hasEditor, boolean forLoadTest) {
         super(testCase, config, hasEditor, forLoadTest);
@@ -56,19 +58,31 @@ public class ReadFileTestStep extends TestStepBase {
     protected void addCustomProperties() {
         addProperty(new DefaultTestStepProperty( RESULT,false,this),true);
         addProperty(new DefaultTestStepProperty( SOURCE_FILE,false,this),true);
+        addProperty(new DefaultTestStepProperty( ENCODING,false,this),true);
     }
 
     @Override
     protected void customRun(TestCaseRunner testCaseRunner, TestCaseRunContext context) throws Exception {
-        String content;
+        String sourceFileName = getSourceFileName(context);
+        String encoding = getEncoding(context);
+
+        setPropertyAndNotifyChange("result",FileContentReader.readAllText(sourceFileName, encoding));
+    }
+
+    private String getEncoding(TestCaseRunContext context) {
+        String encoding = expandPropertyValue(context, ENCODING);
+        if (encoding==null || encoding.equals(""))
+        {
+            SoapUI.log("Assuming UTF-8 encoding, since none was set");
+            encoding = "UTF-8";
+        }
+        return encoding;
+    }
+
+    private String getSourceFileName(TestCaseRunContext context) throws Exception {
         String sourceFileName = expandPropertyValue(context, SOURCE_FILE);
         if (sourceFileName==null || sourceFileName.equals(""))
             throw new Exception("Source file name not set!");
-
-        content = FileContentReader.readAllText(sourceFileName);
-
-        setPropertyAndNotifyChange("result",content);
+        return sourceFileName;
     }
-
-
 }

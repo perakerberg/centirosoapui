@@ -17,6 +17,8 @@
 
 package centiro.soapui.util;
 
+import com.eviware.soapui.SoapUI;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -24,27 +26,73 @@ import java.io.IOException;
 public class StringContainsFileFilter implements FileFilter
 {
     private String[] stringsToContain;
+    private String encoding;
+    private String fileMask;
 
-    public StringContainsFileFilter(String[] stringsToContain)
+    public StringContainsFileFilter(String[] stringsToContain, String encoding, String fileMask)
     {
         this.stringsToContain = stringsToContain;
+        this.encoding = encoding;
+        this.fileMask = fileMask;
     }
     @Override
     public boolean accept(File file) {
         String content;
         if (file.isDirectory())
+        {
+            SoapUI.log(String.format("%s is a directory. Ignoring.", file.getPath()));
             return false;
+        }
+        if (getFileLengthInMegabytes(file)>1)
+        {
+            SoapUI.log(String.format("%s is too large (>1mb). Ignoring.", file.getName()));
+            return false;
+        }
+        if (!hasValidExtension(file))
+        {
+            SoapUI.log(String.format("%s does not have an allowed extension", file.getName()));
+            return false;
+        }
 
         try {
-            content = FileContentReader.readAllText(file.getPath());
+            SoapUI.log(String.format("Searching file %s", file.getPath()));
+            content = FileContentReader.readAllText(file.getPath(),encoding);
         } catch (IOException e) {
+            SoapUI.logError(e);
             return false;
         }
         for(String stringToContain : stringsToContain)
         {
             if (!content.contains(stringToContain))
+            {
+                SoapUI.log(String.format("%s does not contain %s", file.getName(), stringToContain));
                 return false;
+            }
         }
         return true;
+    }
+
+    private Boolean hasValidExtension(File file)
+    {
+        if (this.fileMask == null || this.fileMask.isEmpty())
+            return true;
+
+        String[] validExtensions = fileMask.split(";");
+        for(String extension : validExtensions)
+        {
+            if (file.getName().endsWith(extension.replace("*","")))
+                return true;
+        }
+        return false;
+    }
+
+    private long getFileLengthInMegabytes(File file)
+    {
+        // Get length of file in bytes
+        long fileSizeInBytes = file.length();
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInKB = fileSizeInBytes / 1024;
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        return fileSizeInKB / 1024;
     }
 }

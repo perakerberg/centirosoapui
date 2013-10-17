@@ -17,6 +17,8 @@
 
 package centiro.soapui.teststeps.io.findfile;
 
+import centiro.soapui.ui.ComponentFactory;
+import centiro.soapui.ui.JCaptionedComboBoxWithListener;
 import com.eviware.soapui.support.DocumentListenerAdapter;
 import com.eviware.soapui.support.components.JUndoableTextArea;
 import com.eviware.soapui.support.components.JUndoableTextField;
@@ -38,6 +40,8 @@ public class FindFileTestStepDesktopPanel extends ModelItemDesktopPanel<FindFile
     private JUndoableTextField secondaryPathField;
     private JUndoableTextField waitTimeField;
     private JUndoableTextArea containsField;
+    private JCaptionedComboBoxWithListener encodingComboBox;
+    private JUndoableTextField fileMaskField;
 
 
     public FindFileTestStepDesktopPanel(FindFileTestStep modelItem)
@@ -49,15 +53,45 @@ public class FindFileTestStepDesktopPanel extends ModelItemDesktopPanel<FindFile
     private void buildUI()
     {
         setLayout(new BorderLayout());
-        JComponent primarySourceRow = createPrimarySourceRow();
-        add(primarySourceRow, BorderLayout.NORTH);
-        JComponent secondarySourceRow = createSecondarySourceRow();
-        add(secondarySourceRow, BorderLayout.CENTER);
-        JComponent fileContainsRow = createFileContainsRow();
-        add(fileContainsRow, BorderLayout.SOUTH);
+        add(createSourcesRow(), BorderLayout.NORTH);
+        add(createSettingsRow(), BorderLayout.CENTER);
+        add(createFileContainsRow(), BorderLayout.SOUTH);
     }
 
-    public JComponent createPrimarySourceRow()
+    public JComponent createSourcesRow()
+    {
+        JPanel sourcesPanel = new JPanel(new BorderLayout());
+        sourcesPanel.add(createPrimarySourceRow(), BorderLayout.NORTH);
+        sourcesPanel.add(createSecondarySourceRow(), BorderLayout.SOUTH);
+        return sourcesPanel;
+
+    }
+
+    private JComponent createSettingsRow()
+    {
+        ButtonBarBuilder builder = new ButtonBarBuilder();
+
+        encodingComboBox = ComponentFactory.CreateEncodingComboBoxWithCaption("Encoding",true,getModelItem(),FindFileTestStep.ENCODING);
+        builder.addFixed(encodingComboBox.getComponent());
+        builder.addUnrelatedGap();
+        builder.addFixed(new JLabel("File mask (separated by ;)"));
+        builder.addRelatedGap();
+        fileMaskField = new JUndoableTextField( getModelItem().getPropertyValue(FindFileTestStep.FILEMASK) );
+        fileMaskField.getDocument().addDocumentListener(new DocumentListenerAdapter() {
+            @Override
+            public void update(Document document) {
+                getModelItem().setPropertyAndNotifyChange(FindFileTestStep.FILEMASK, fileMaskField.getText());
+            }
+        });
+        fileMaskField.setPreferredSize(new Dimension(100, 25));
+        PropertyExpansionPopupListener.enable(fileMaskField, getModelItem());
+        builder.addFixed(fileMaskField);
+
+        return builder.getPanel();
+
+    }
+
+    private JComponent createPrimarySourceRow()
     {
         ButtonBarBuilder builder = new ButtonBarBuilder();
         builder.addFixed( new JLabel( "Source path 1" ) );
@@ -107,13 +141,12 @@ public class FindFileTestStepDesktopPanel extends ModelItemDesktopPanel<FindFile
         PropertyExpansionPopupListener.enable(waitTimeField, getModelItem());
         builder.addFixed(waitTimeField);
 
-
         JPanel panel =  builder.getPanel();
         panel.setMaximumSize(panel.getPreferredSize());
         return panel;
     }
 
-    public JComponent createSecondarySourceRow()
+    private JComponent createSecondarySourceRow()
     {
         ButtonBarBuilder builder = new ButtonBarBuilder();
         builder.addFixed( new JLabel( "Source path 2" ) );
@@ -178,6 +211,7 @@ public class FindFileTestStepDesktopPanel extends ModelItemDesktopPanel<FindFile
 
         return contentPanel;
 
+
     }
 
 
@@ -206,6 +240,14 @@ public class FindFileTestStepDesktopPanel extends ModelItemDesktopPanel<FindFile
         {
             if (!newValue.equals(waitTimeField.getText()))
                 waitTimeField.setText(newValue);
+        }
+        else  if (encodingComboBox.HandlePropertyChanged(evt.getPropertyName(), newValue))
+            return;
+
+        if (evt.getPropertyName().equals(FindFileTestStep.FILEMASK))
+        {
+            if (!newValue.equals(fileMaskField.getText()))
+                fileMaskField.setText(newValue);
         }
     }
 }
