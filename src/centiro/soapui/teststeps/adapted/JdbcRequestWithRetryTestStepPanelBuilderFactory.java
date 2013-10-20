@@ -17,16 +17,20 @@
 package centiro.soapui.teststeps.adapted;
 
 import com.eviware.soapui.impl.EmptyPanelBuilder;
+import com.eviware.soapui.impl.wsdl.panels.teststeps.JdbcRequestTestStepPanelBuilder;
 import com.eviware.soapui.model.PanelBuilder;
 import com.eviware.soapui.model.util.PanelBuilderFactory;
+import com.eviware.soapui.support.components.JPropertiesTable;
 import com.eviware.soapui.ui.desktop.DesktopPanel;
+
+import java.awt.*;
 
 public class JdbcRequestWithRetryTestStepPanelBuilderFactory implements PanelBuilderFactory<JdbcRequestWithRetryTestStep>
 {
 	@Override
 	public PanelBuilder<JdbcRequestWithRetryTestStep> createPanelBuilder()
 	{
-		return new WriteFileTestStepPanelBuilder();
+		return new JdbcRequestWithRetryTestStepPanelBuilder();
 	}
 
 	@Override
@@ -35,8 +39,11 @@ public class JdbcRequestWithRetryTestStepPanelBuilderFactory implements PanelBui
 		return JdbcRequestWithRetryTestStep.class;
 	}
 
-	public static class WriteFileTestStepPanelBuilder extends EmptyPanelBuilder<JdbcRequestWithRetryTestStep>
+	public static class JdbcRequestWithRetryTestStepPanelBuilder extends EmptyPanelBuilder<JdbcRequestWithRetryTestStep>
 	{
+        // needed to build the overview panel
+        private JdbcRequestTestStepPanelBuilder jdbcRequestTestStepPanelBuilder = new JdbcRequestTestStepPanelBuilder();
+
 		@Override
 		public DesktopPanel buildDesktopPanel( JdbcRequestWithRetryTestStep modelItem )
 		{
@@ -48,5 +55,19 @@ public class JdbcRequestWithRetryTestStepPanelBuilderFactory implements PanelBui
 		{
 			return true;
 		}
-	}
+
+        @Override
+        public Component buildOverviewPanel(JdbcRequestWithRetryTestStep modelItem) {
+            Component panel = jdbcRequestTestStepPanelBuilder.buildOverviewPanel(modelItem);
+
+            // make sure this hasn't changed
+            if( panel instanceof JPropertiesTable)
+            {
+                ((JPropertiesTable) panel).addProperty("Wait Time", "waitTime" );
+                ((JPropertiesTable) panel).addProperty("Retry Interval", "retryInterval" );
+            }
+
+            return panel;
+        }
+    }
 }

@@ -46,7 +46,7 @@ public class TransformTextTestStep extends TestStepBase
     protected void customRun(TestCaseRunner testCaseRunner, TestCaseRunContext context) throws Exception {
         String content = expandPropertyValue(context, INPUT);
         String transformation = expandPropertyValue(context, TRANSFORMATION);
-        String result = new FileContentReplacer(content, transformation, context).Execute();
+        String result = new FileContentReplacer(content, transformation, context).execute();
 
         setPropertyAndNotifyChange(RESULT, result);
     }

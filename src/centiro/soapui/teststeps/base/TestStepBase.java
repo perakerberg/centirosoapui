@@ -27,8 +27,6 @@ import com.eviware.soapui.support.UISupport;
 import com.eviware.soapui.support.xml.XmlObjectConfigurationBuilder;
 import com.eviware.soapui.support.xml.XmlObjectConfigurationReader;
 
-import javax.swing.*;
-
 public abstract class TestStepBase extends WsdlTestStepWithProperties {
 
     protected abstract String getIconFileName();
@@ -91,11 +89,11 @@ public abstract class TestStepBase extends WsdlTestStepWithProperties {
         SoapUI.log("TestStep started: " + getName());
         WsdlTestStepResult result = new WsdlTestStepResult( this );
         result.startTimer();
-        setIcon(new ImageIcon(getIconFileName()));
+        setIcon(UISupport.createImageIcon(getIconFileName()));
         try
         {
             customRun(testCaseRunner, context);
-            setIcon(new ImageIcon(getSucceededIconFileName()));
+            setIcon(UISupport.createImageIcon(getSucceededIconFileName()));
             result.setStatus( TestStepResult.TestStepStatus.OK );
         }
         catch( Exception ex )
@@ -103,7 +101,7 @@ public abstract class TestStepBase extends WsdlTestStepWithProperties {
             SoapUI.logError(ex);
             result.setError( ex );
             result.setStatus( TestStepResult.TestStepStatus.FAILED );
-            setIcon(new ImageIcon(getFailedIconFileName()));
+            setIcon(UISupport.createImageIcon(getFailedIconFileName()));
         }
 
         result.stopTimer();

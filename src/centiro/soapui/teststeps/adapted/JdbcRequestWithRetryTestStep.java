@@ -26,94 +26,81 @@ import com.eviware.soapui.impl.wsdl.teststeps.*;
 import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 import com.eviware.soapui.model.testsuite.TestStepResult;
+import com.eviware.soapui.support.UISupport;
 
 import javax.swing.*;
 
 public class JdbcRequestWithRetryTestStep extends JdbcRequestTestStep {
 
+    public static final String WAIT_TIME_SETTING = "#WaitTime";
+    public static final String RETRY_INTERVAL_SETTING = "#RetryInterval";
 
-    private final String WAIT_TIME_QUERY_PART = "\n/*Modified by soapUI, please leave the following line*/\nWHERE :WaitTime = :WaitTime AND\n";
-     private TestStepState _state = TestStepState.NotRunning;
+    private TestStepState _state = TestStepState.NotRunning;
 
    public JdbcRequestWithRetryTestStep(WsdlTestCase testCase, TestStepConfig config, boolean forLoadTest) {
         super(testCase, config, forLoadTest);
 
-        initializeProperties();
         setIcon(new ImageIcon(IconFileNames.JDBC_RETRY, IconFileNames.JDBC_RETRY));
     }
 
-    private String addDummyParameterToQuery(String query) {
 
-        if (query==null || query.contains(WAIT_TIME_QUERY_PART))
-            return query;
-
-        String[] queryParts = query.contains("where") ? query.split("where") : query.split("WHERE");
-            if (queryParts.length == 2)
-            {
-                return queryParts[0] + WAIT_TIME_QUERY_PART + queryParts[1];
-            }
-        return query;
-    }
-
-    private void initializeProperties() {
-
-        if (!hasProperty("WaitTime"))
-        {
-           addProperty("WaitTime");
-            setPropertyValue("WaitTime","5");
-        }
-    }
-
-    private int getWaitTime()
+    public int getWaitTime()
     {
-        String waitTimeString = getPropertyValue("WaitTime");
-        if (waitTimeString==null || waitTimeString.equals(""))
-            return 0;
+        return (int) getSettings().getLong(WAIT_TIME_SETTING, 5);
+    }
 
-        try
-        {
-            return Integer.parseInt(waitTimeString);
-        }
-        catch (NumberFormatException nex)
-        {
-            return 0;
-        }
+    public void setWaitTime( int waitTime )
+    {
+        int oldWaitTime = getWaitTime();
+        if( oldWaitTime == waitTime )
+            return;
+
+        getSettings().setLong(WAIT_TIME_SETTING, waitTime );
+
+        notifyPropertyChanged( "waitTime", oldWaitTime, waitTime);
+    }
+
+    public int getRetryInterval()
+    {
+        return (int) getSettings().getLong(RETRY_INTERVAL_SETTING, 500);
+    }
+
+    public void setRetryInterval( int retryInterval )
+    {
+        int oldRetryInterval = getRetryInterval();
+        if( oldRetryInterval == retryInterval )
+            return;
+
+        getSettings().setLong(RETRY_INTERVAL_SETTING, retryInterval );
+
+        notifyPropertyChanged( "retryInterval", oldRetryInterval, retryInterval );
     }
 
     @Override
     public ImageIcon getIcon()
     {
         if (_state == TestStepState.Failed)
-            return new ImageIcon(IconFileNames.JDBC_RETRY_ERROR);
+            return UISupport.createImageIcon(IconFileNames.JDBC_RETRY_ERROR);
         if (_state == TestStepState.Ok)
-            return new ImageIcon(IconFileNames.JDBC_RETRY_OK);
+            return UISupport.createImageIcon(IconFileNames.JDBC_RETRY_OK);
 
-        return new ImageIcon(IconFileNames.JDBC_RETRY);
+        return UISupport.createImageIcon(IconFileNames.JDBC_RETRY);
     }
-//    @Override
-//    public void setIcon(ImageIcon icon)
-//    {
-//        if (icon.getDescription().contains("jdbc-retry"))
-//            super.setIcon(icon);
-//
-//        SoapUI.log("Set icon: " + icon.getDescription());
-//    }
 
     @Override
     public TestStepResult run(TestCaseRunner testCaseRunner, TestCaseRunContext context) {
 
         _state = TestStepState.Running;
         SoapUI.log("TestStep started: " + getName());
-        setQuery(addDummyParameterToQuery(getQuery()));
         int maxRetryMs = getWaitTime() * 1000;
         int totalRetryMs = 0;
         JdbcTestStepResult result = (JdbcTestStepResult)super.run(testCaseRunner, context);
         while(totalRetryMs<maxRetryMs && getAssertionStatus()!=AssertionStatus.VALID)
         {
 
-            totalRetryMs+=500;
+            totalRetryMs+=getRetryInterval();
             try {
-                    Thread.sleep(500);
+                    Thread.sleep(getRetryInterval());
                 }
             catch (InterruptedException ignored) {
 

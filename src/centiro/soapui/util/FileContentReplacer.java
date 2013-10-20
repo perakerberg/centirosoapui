@@ -32,7 +32,7 @@ public class FileContentReplacer {
         _context = context;
     }
 
-    public String Execute() throws Exception {
+    public String execute() throws Exception {
 
         String splitter = "\\n";
 
