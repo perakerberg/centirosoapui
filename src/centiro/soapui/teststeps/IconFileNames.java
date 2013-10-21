@@ -24,6 +24,8 @@ public class IconFileNames {
     public static final String WRITE_SOCKET = "writesocket.png";
     public static final String FIND_FILE = "findfile.png";
     public static final String JDBC_RETRY = "jdbc-retry.png";
+    public static final String GENERATE_IDENTIFIER = "generateidentifier.png";
+
 
     public static final String READ_FILE_ERROR = "readfile-error.png";
     public static final String WRITE_FILE_ERROR = "writefile-error.png";
@@ -31,6 +33,8 @@ public class IconFileNames {
     public static final String WRITE_SOCKET_ERROR = "writesocket-error.png";
     public static final String FIND_FILE_ERROR = "findfile-error.png";
     public static final String JDBC_RETRY_ERROR = "jdbc-retry-error.png";
+    public static final String GENERATE_IDENTIFIER_ERROR = "generateidentifier-error.png";
+
 
     public static final String READ_FILE_OK = "readfile-ok.png";
     public static final String WRITE_FILE_OK = "writefile-ok.png";
@@ -38,5 +42,7 @@ public class IconFileNames {
     public static final String WRITE_SOCKET_OK = "writesocket-ok.png";
     public static final String FIND_FILE_OK = "findfile-ok.png";
     public static final String JDBC_RETRY_OK = "jdbc-retry-ok.png";
+    public static final String GENERATE_IDENTIFIER_OK = "generateidentifier-ok.png";
+
 
 }

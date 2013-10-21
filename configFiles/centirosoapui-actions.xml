@@ -42,4 +42,12 @@
         <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
                            keyStroke="F1" param="http://www.centiro.com" />
     </tns:actionGroup>
+    <tns:actionGroup name="Transform text test step actions"
+                     id="GenerateIdentifierTestStepActions"
+                     class="com.eviware.soapui.impl.wsdl.actions.teststep.WsdlTestStepSoapUIActionGroup">
+        <tns:actionMapping actionId="SeperatorAction" />
+        <tns:actionMapping actionId="ShowOnlineSoapUIHelp"
+                           keyStroke="F1" param="http://www.centiro.com" />
+    </tns:actionGroup>
+
 </tns:soapui-actions>

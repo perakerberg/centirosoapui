@@ -37,4 +37,10 @@
     <tns:factory id="jdbcrequestwithretrypanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
                  factoryClass="centiro.soapui.teststeps.adapted.JdbcRequestWithRetryTestStepPanelBuilderFactory"/>
 
+    <tns:factory id="generateidentifier"
+                 factoryType="com.eviware.soapui.impl.wsdl.teststeps.registry.WsdlTestStepFactory"
+                 factoryClass="centiro.soapui.teststeps.generate.identifier.GenerateIdentifierTestStepFactory"/>
+    <tns:factory id="generateidentifierPanelBuilder" factoryType="com.eviware.soapui.model.util.PanelBuilderFactory"
+                 factoryClass="centiro.soapui.teststeps.generate.identifier.GenerateIdentifierTestStepPanelBuilderFactory"/>
+
 </tns:soapui-factories>

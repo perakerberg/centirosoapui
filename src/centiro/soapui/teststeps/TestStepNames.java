@@ -24,5 +24,6 @@ public class TestStepNames {
     public static final String SEND_SOCKET = "sendsocket";
     public static final String FIND_FILE = "findfile";
     public static final String RUN_WITH_RETRY = "jdbcretry";
+    public static final String GENERATE_IDENTIFIER = "generateidentifier";
 
 }
