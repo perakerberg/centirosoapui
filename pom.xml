@@ -178,6 +178,9 @@
             <resource>
                 <directory>configFiles</directory>
             </resource>
+            <resource>
+                <directory>images</directory>
+            </resource>
         </resources>
 
         <sourceDirectory>src</sourceDirectory>
@@ -189,6 +192,7 @@
                 <version>1.5</version>
                 <configuration>
                     <providerSelection>1.8</providerSelection>
+                    <source/>
                 </configuration>
                 <executions>
                     <execution>
