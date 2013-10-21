@@ -130,21 +130,7 @@ public abstract class TestStepBase extends WsdlTestStepWithProperties {
 
     }
 
-    protected int getPropertyValueAsInt(String propertyName)
-    {
-        String propertyValue = getPropertyValue(propertyName);
-        if (propertyValue==null || propertyValue.equals(""))
-            return 0;
 
-        try
-        {
-            return Integer.parseInt(propertyValue);
-        }
-        catch (NumberFormatException nex)
-        {
-            return 0;
-        }
-    }
 
 }
 

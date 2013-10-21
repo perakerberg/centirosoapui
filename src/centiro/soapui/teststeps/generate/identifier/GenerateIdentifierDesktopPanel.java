@@ -44,13 +44,13 @@ public class GenerateIdentifierDesktopPanel extends ModelItemDesktopPanel<Genera
     {
         setLayout(new BorderLayout());
         add(createFormatRow(), BorderLayout.NORTH);
-        add(createLengthRow(), BorderLayout.SOUTH);
+        add(createLengthRow(), BorderLayout.CENTER);
     }
 
     public JComponent createFormatRow()
     {
         ButtonBarBuilder builder = new ButtonBarBuilder();
-        builder.addFixed(new JLabel("Format (Use %s to place identifier)"));
+        builder.addFixed(new JLabel("Format (Use <id> to place identifier)"));
         builder.addRelatedGap();
 
         formatField = new JUndoableTextField( getModelItem().getPropertyValue(GenerateIdentifierTestStep.FORMAT) );

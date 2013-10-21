@@ -27,4 +27,22 @@ public class StringUtil {
         }
         return builder.toString();
     }
+
+    public static int convertToIntWithDefault(String value, int defaultValue)
+    {
+        if (value==null || value.equals(""))
+        {
+           return defaultValue;
+        }
+
+        try
+        {
+            return Integer.parseInt(value);
+        }
+        catch (NumberFormatException nex)
+        {
+            return defaultValue;
+        }
+    }
 }
+

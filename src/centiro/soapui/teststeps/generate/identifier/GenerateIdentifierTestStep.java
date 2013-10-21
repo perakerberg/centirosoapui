@@ -18,12 +18,14 @@ package centiro.soapui.teststeps.generate.identifier;
 
 import centiro.soapui.teststeps.IconFileNames;
 import centiro.soapui.teststeps.base.TestStepBase;
+import centiro.soapui.util.StringUtil;
 import com.eviware.soapui.config.TestStepConfig;
 import com.eviware.soapui.impl.wsdl.testcase.WsdlTestCase;
 import com.eviware.soapui.model.support.DefaultTestStepProperty;
 import com.eviware.soapui.model.testsuite.TestCaseRunContext;
 import com.eviware.soapui.model.testsuite.TestCaseRunner;
 
+import java.util.Random;
 import java.util.UUID;
 
 public class GenerateIdentifierTestStep extends TestStepBase {
@@ -60,21 +62,40 @@ public class GenerateIdentifierTestStep extends TestStepBase {
 
     @Override
     protected void customRun(TestCaseRunner testCaseRunner, TestCaseRunContext context) throws Exception {
-        int minLength = getPropertyValueAsInt(MIN_LENGTH);
-        int maxLength = getPropertyValueAsInt(MAX_LENGTH);
-        String format = getPropertyValue(FORMAT);
-        String result = UUID.randomUUID().toString();
-        if (format!=null && !format.isEmpty())
-           result = String.format(format,result);
-
-        if (maxLength>0 && maxLength<result.length()) //Not Unlimited
-            result = result.substring(0,maxLength-1);
-
-        while (result.length()<minLength)
+        int minLength = StringUtil.convertToIntWithDefault(expandPropertyValue(context, MIN_LENGTH), 0);
+        int maxLength = StringUtil.convertToIntWithDefault(expandPropertyValue(context, MAX_LENGTH), 0);
+        if (maxLength>0 && minLength>maxLength)
         {
-             result = "X" + result;
+            minLength = maxLength;
+            setPropertyValue(MIN_LENGTH, Integer.toString(minLength));
         }
 
-        setPropertyAndNotifyChange(RESULT, result);
+        String format = expandPropertyValue(context, FORMAT);
+        String identifier;
+
+        if (maxLength>0 && maxLength<36)
+        {
+            //Cannot use Guid
+            Random generator = new Random();
+            int maximumValue = (int)Math.pow(10,maxLength);
+            int randomNumber  = generator.nextInt(maximumValue-1);
+            identifier = Integer.toString(randomNumber);
+        }
+        else
+        {
+           identifier = UUID.randomUUID().toString();
+        }
+        if (format!=null && !format.isEmpty())
+           identifier = format.replace("<id>", identifier);
+
+        if (maxLength>0 && maxLength<identifier.length()) //Not Unlimited
+            identifier = identifier.substring(0,maxLength);
+
+        while (identifier.length()<minLength)
+        {
+             identifier = "X" + identifier;
+        }
+
+        setPropertyAndNotifyChange(RESULT, identifier);
     }
 }
