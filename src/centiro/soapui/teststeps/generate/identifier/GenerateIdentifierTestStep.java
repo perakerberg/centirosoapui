@@ -31,8 +31,7 @@ import java.util.UUID;
 public class GenerateIdentifierTestStep extends TestStepBase {
 
     public static final String FORMAT = "format";
-    public static final String MAX_LENGTH = "maxlength";
-    public static final String MIN_LENGTH = "minlength";
+    public static final String LENGTH = "length";
     public static final String RESULT = "result";
 
     public GenerateIdentifierTestStep(WsdlTestCase testCase, TestStepConfig config, boolean hasEditor, boolean forLoadTest) {
@@ -55,29 +54,22 @@ public class GenerateIdentifierTestStep extends TestStepBase {
     @Override
     protected void addCustomProperties() {
         addProperty(new DefaultTestStepProperty( FORMAT,false,this),true);
-        addProperty(new DefaultTestStepProperty( MIN_LENGTH,false,this),true);
-        addProperty(new DefaultTestStepProperty( MAX_LENGTH,false,this),true);
+        addProperty(new DefaultTestStepProperty(LENGTH,false,this),true);
         addProperty(new DefaultTestStepProperty( RESULT,false,this),true);
     }
 
     @Override
     protected void customRun(TestCaseRunner testCaseRunner, TestCaseRunContext context) throws Exception {
-        int minLength = StringUtil.convertToIntWithDefault(expandPropertyValue(context, MIN_LENGTH), 0);
-        int maxLength = StringUtil.convertToIntWithDefault(expandPropertyValue(context, MAX_LENGTH), 0);
-        if (maxLength>0 && minLength>maxLength)
-        {
-            minLength = maxLength;
-            setPropertyValue(MIN_LENGTH, Integer.toString(minLength));
-        }
+        int length = StringUtil.convertToIntWithDefault(expandPropertyValue(context, LENGTH), 0);
 
         String format = expandPropertyValue(context, FORMAT);
         String identifier;
 
-        if (maxLength>0 && maxLength<36)
+        if (length>0 && length<36)
         {
             //Cannot use Guid
             Random generator = new Random();
-            int maximumValue = (int)Math.pow(10,maxLength);
+            int maximumValue = (int)Math.pow(10,length);
             int randomNumber  = generator.nextInt(maximumValue-1);
             identifier = Integer.toString(randomNumber);
         }
@@ -88,12 +80,12 @@ public class GenerateIdentifierTestStep extends TestStepBase {
         if (format!=null && !format.isEmpty())
            identifier = format.replace("<id>", identifier);
 
-        if (maxLength>0 && maxLength<identifier.length()) //Not Unlimited
-            identifier = identifier.substring(0,maxLength);
+        if (length>0 && length<identifier.length()) //Not Unlimited
+            identifier = identifier.substring(0,length);
 
-        while (identifier.length()<minLength)
+        while (identifier.length()<length)
         {
-             identifier = "X" + identifier;
+             identifier = "0" + identifier;
         }
 
         setPropertyAndNotifyChange(RESULT, identifier);

@@ -130,7 +130,5 @@ public abstract class TestStepBase extends WsdlTestStepWithProperties {
 
     }
 
-
-
 }
 

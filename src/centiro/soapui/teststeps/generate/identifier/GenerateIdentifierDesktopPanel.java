@@ -32,7 +32,6 @@ public class GenerateIdentifierDesktopPanel extends ModelItemDesktopPanel<Genera
 {
     private JUndoableTextField formatField;
     private JUndoableTextField maxLengthField;
-    private JUndoableTextField minLengthField;
 
     public GenerateIdentifierDesktopPanel(GenerateIdentifierTestStep modelItem)
     {
@@ -72,30 +71,15 @@ public class GenerateIdentifierDesktopPanel extends ModelItemDesktopPanel<Genera
     public JComponent createLengthRow()
     {
         ButtonBarBuilder builder = new ButtonBarBuilder();
-        builder.addFixed(new JLabel("Min length"));
+
+        builder.addFixed(new JLabel("Length"));
         builder.addRelatedGap();
 
-        minLengthField = new JUndoableTextField( getModelItem().getPropertyValue(GenerateIdentifierTestStep.MIN_LENGTH) );
-        minLengthField.getDocument().addDocumentListener(new DocumentListenerAdapter() {
-            @Override
-            public void update(Document document) {
-                getModelItem().setPropertyAndNotifyChange(GenerateIdentifierTestStep.MIN_LENGTH, minLengthField.getText());
-            }
-        });
-        minLengthField.setPreferredSize(new Dimension(50, 25));
-        PropertyExpansionPopupListener.enable(minLengthField, getModelItem());
-        builder.addFixed(minLengthField);
-
-        builder.addUnrelatedGap();
-
-        builder.addFixed(new JLabel("Max length"));
-        builder.addRelatedGap();
-
-        maxLengthField = new JUndoableTextField( getModelItem().getPropertyValue(GenerateIdentifierTestStep.MAX_LENGTH) );
+        maxLengthField = new JUndoableTextField( getModelItem().getPropertyValue(GenerateIdentifierTestStep.LENGTH) );
         maxLengthField.getDocument().addDocumentListener(new DocumentListenerAdapter() {
             @Override
             public void update(Document document) {
-                getModelItem().setPropertyAndNotifyChange(GenerateIdentifierTestStep.MAX_LENGTH, maxLengthField.getText());
+                getModelItem().setPropertyAndNotifyChange(GenerateIdentifierTestStep.LENGTH, maxLengthField.getText());
             }
         });
         maxLengthField.setPreferredSize(new Dimension(50, 25));
@@ -118,12 +102,8 @@ public class GenerateIdentifierDesktopPanel extends ModelItemDesktopPanel<Genera
             if (!newValue.equals(formatField.getText()))
                 formatField.setText(newValue);
         }
-        else if (evt.getPropertyName().equals(GenerateIdentifierTestStep.MIN_LENGTH))
-        {
-            if (!newValue.equals(minLengthField.getText()))
-                minLengthField.setText(newValue);
-        }
-        else if (evt.getPropertyName().equals(GenerateIdentifierTestStep.MAX_LENGTH))
+
+        else if (evt.getPropertyName().equals(GenerateIdentifierTestStep.LENGTH))
         {
             if (!newValue.equals(maxLengthField.getText()))
                 maxLengthField.setText(newValue);
