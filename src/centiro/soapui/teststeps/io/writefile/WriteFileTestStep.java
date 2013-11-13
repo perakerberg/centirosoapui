@@ -36,6 +36,7 @@ public class WriteFileTestStep extends TestStepBase
     public static final String TARGET_PATH = "targetPath";
     public static final String CONTENTS = "contents";
     public static final String WAIT_SECONDS_TO_BE_DELETED = "waitBeforeDelete";
+    public static final String EXTENSION = "extension";
     public static final String FILE_NAME = "filename";
     public static final String ENCODING = "encoding";
 
@@ -67,6 +68,8 @@ public class WriteFileTestStep extends TestStepBase
         addProperty(new DefaultTestStepProperty( TARGET_PATH, false, this), true);
         addProperty(new DefaultTestStepProperty( WAIT_SECONDS_TO_BE_DELETED, false, this), true);
         addProperty(new DefaultTestStepProperty( ENCODING, false, this), true);
+        addProperty(new DefaultTestStepProperty( EXTENSION, false, this), true);
+
     }
 
     private int getWaitTimeToBeDeleted()
@@ -90,8 +93,9 @@ public class WriteFileTestStep extends TestStepBase
         String targetPath = getTargetPath(context);
         String content = getContent(context);
         String encoding = getEncoding(context);
+        String extension = getExtension(context);
 
-        String targetFileName =   targetPath + "\\" + UUID.randomUUID().toString() + ".xml";
+        String targetFileName =   targetPath + "\\" + UUID.randomUUID().toString() + extension;
         FileContentWriter.writeAllText(targetFileName, content, encoding);
         setPropertyAndNotifyChange(FILE_NAME, targetFileName);
 
@@ -129,6 +133,16 @@ public class WriteFileTestStep extends TestStepBase
             throw new Exception("Nothing to write");
         }
         return message;
+    }
+
+    private String getExtension(TestCaseRunContext context) throws Exception {
+        String extension =expandPropertyValue(context, EXTENSION);
+        SoapUI.log("Extension is " + extension);
+        if (extension == null || extension.isEmpty())
+        {
+            return ".xml";
+        }
+        return extension.startsWith(".") ? extension : "." + extension;
     }
 
     private String getTargetPath(TestCaseRunContext context) throws Exception {

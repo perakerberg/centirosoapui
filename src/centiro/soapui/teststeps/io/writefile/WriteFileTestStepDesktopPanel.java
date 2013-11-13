@@ -39,6 +39,8 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
     private JUndoableTextField targetPathField;
     private JUndoableTextArea contentField;
     private JUndoableTextField waitTimeField;
+    private JUndoableTextField extensionField;
+
     private JCaptionedComboBoxWithListener encodingComboBox;
 
     public WriteFileTestStepDesktopPanel(WriteFileTestStep modelItem)
@@ -142,6 +144,20 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
         encodingComboBox = ComponentFactory.CreateEncodingComboBoxWithCaption("Encoding", true, getModelItem(), WriteFileTestStep.ENCODING);
         builder.addFixed(encodingComboBox.getComponent());
 
+        builder.addUnrelatedGap();
+        builder.addFixed(new JLabel("Extension (.xml etc)"));
+        extensionField = new JUndoableTextField( getModelItem().getPropertyValue(WriteFileTestStep.EXTENSION) );
+        extensionField.getDocument().addDocumentListener( new DocumentListenerAdapter()
+        {
+            @Override
+            public void update( Document document )
+            {
+                getModelItem().setPropertyAndNotifyChange(WriteFileTestStep.EXTENSION, extensionField.getText());
+            }
+        } );
+        extensionField.setPreferredSize(new Dimension(50, 25));
+        PropertyExpansionPopupListener.enable(extensionField, getModelItem());
+        builder.addFixed(extensionField);
 
         JPanel panel =  builder.getPanel();
         panel.setMaximumSize(panel.getPreferredSize());
@@ -167,6 +183,11 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
         {
             if (!newValue.equals(waitTimeField.getText()))
                 waitTimeField.setText(newValue);
+        }
+        else if (evt.getPropertyName().equals(WriteFileTestStep.EXTENSION))
+        {
+            if (!newValue.equals(extensionField.getText()))
+                extensionField.setText(newValue);
         }
         else encodingComboBox.HandlePropertyChanged(evt.getPropertyName(),evt.getNewValue());
 

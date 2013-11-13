@@ -63,7 +63,7 @@ public class JdbcRequestWithRetryTestStepPanelBuilderFactory implements PanelBui
             // make sure this hasn't changed
             if( panel instanceof JPropertiesTable)
             {
-                ((JPropertiesTable) panel).addProperty("Wait Time", "waitTime" );
+                ((JPropertiesTable) panel).addProperty("Wait Time", "waitTime",true );
                 ((JPropertiesTable) panel).addProperty("Retry Interval", "retryInterval" );
             }
 
