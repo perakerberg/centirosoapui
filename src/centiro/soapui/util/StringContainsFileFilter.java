@@ -22,6 +22,7 @@ import com.eviware.soapui.SoapUI;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.util.Date;
 
 public class StringContainsFileFilter implements FileFilter
 {
@@ -38,9 +39,16 @@ public class StringContainsFileFilter implements FileFilter
     @Override
     public boolean accept(File file) {
         String content;
+        long milisecondsInADay = 24 * 60 * 60 * 1000;
+        Date yesterday = new Date(new Date().getTime() - milisecondsInADay);
         if (file.isDirectory())
         {
             SoapUI.log(String.format("%s is a directory. Ignoring.", file.getPath()));
+            return false;
+        }
+        if (file.lastModified()<yesterday.getTime())
+        {
+            SoapUI.log(String.format("%s is to old. Ignoring.", file.getPath()));
             return false;
         }
         if (getFileLengthInMegabytes(file)>1)

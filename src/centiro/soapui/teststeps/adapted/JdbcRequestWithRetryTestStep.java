@@ -55,6 +55,7 @@ public class JdbcRequestWithRetryTestStep extends JdbcRequestTestStep {
         if( oldWaitTime == waitTime )
             return;
 
+
         getSettings().setLong(WAIT_TIME_SETTING, waitTime );
 
         notifyPropertyChanged( "waitTime", oldWaitTime, waitTime);

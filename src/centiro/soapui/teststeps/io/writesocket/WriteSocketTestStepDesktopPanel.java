@@ -17,6 +17,7 @@
 
 package centiro.soapui.teststeps.io.writesocket;
 
+import centiro.soapui.teststeps.base.ToolbarHelper;
 import com.eviware.soapui.support.DocumentListenerAdapter;
 import com.eviware.soapui.support.components.JUndoableTextArea;
 import com.eviware.soapui.support.components.JUndoableTextField;
@@ -35,7 +36,6 @@ import java.beans.PropertyChangeEvent;
 public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<WriteSocketTestStep>
 
 {
-
     private JUndoableTextField ipAddressField;
     private JUndoableTextField portField;
     private JUndoableTextArea contentField;
@@ -45,10 +45,11 @@ public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<Write
     public WriteSocketTestStepDesktopPanel(WriteSocketTestStep modelItem)
 	{
 		super(modelItem);
-        buildUI();
+        buildUI(modelItem);
+
 	}
 
-    private void buildUI()
+    private void buildUI(WriteSocketTestStep modelItem)
     {
         setLayout(new BorderLayout());
         JComponent contentRow = createContentRow();
@@ -57,7 +58,7 @@ public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<Write
         ipAdressRow.setMaximumSize(ipAdressRow.getPreferredSize());
         add(ipAdressRow, BorderLayout.SOUTH);
         JComponent messageSettingsRow = createMessageSettingsRow();
-        add(messageSettingsRow, BorderLayout.NORTH);
+        add(ToolbarHelper.addRunTestStepToolBar(modelItem,"Run write socket test step", messageSettingsRow),BorderLayout.NORTH);
     }
 
     private JComponent createContentRow() {
@@ -69,7 +70,6 @@ public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<Write
         instructionLabel.setHorizontalTextPosition(JLabel.LEFT);
         contentPanel.add(instructionLabel, BorderLayout.NORTH);
 
-
         contentField = new JUndoableTextArea( getModelItem().getPropertyValue(WriteSocketTestStep.CONTENT));
         contentField.getDocument().addDocumentListener( new DocumentListenerAdapter()
         {
@@ -79,11 +79,15 @@ public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<Write
                 getModelItem().setPropertyAndNotifyChange(WriteSocketTestStep.CONTENT, contentField.getText());
             }
         } );
-        contentField.setPreferredSize(new Dimension(400, 400));
+        //contentField.setPreferredSize(new Dimension(400, 400));
         contentField.setBorder(new LineBorder(Color.BLACK));
+        JScrollPane scroll = new JScrollPane (contentField,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+
         PropertyExpansionPopupListener.enable(contentField, getModelItem());
 
-        contentPanel.add(contentField, BorderLayout.CENTER);
+        contentPanel.add(scroll, BorderLayout.CENTER);
 
         return contentPanel;
 
@@ -139,8 +143,6 @@ public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<Write
                 getModelItem().setPropertyAndNotifyChange(WriteSocketTestStep.USE_STXETX, useStxEtxCheckbox.isSelected());
             }
         });
-
-
         builder.addFixed(useStxEtxCheckbox);
 
         return builder.getPanel();
@@ -174,4 +176,7 @@ public class WriteSocketTestStepDesktopPanel extends ModelItemDesktopPanel<Write
                 useStxEtxCheckbox.setSelected(!useStxEtxCheckbox.isSelected());
         }
     }
+
+
 }
+

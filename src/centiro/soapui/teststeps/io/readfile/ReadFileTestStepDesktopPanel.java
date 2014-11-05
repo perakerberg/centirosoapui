@@ -17,6 +17,7 @@
 
 package centiro.soapui.teststeps.io.readfile;
 
+import centiro.soapui.teststeps.base.ToolbarHelper;
 import centiro.soapui.ui.ComponentFactory;
 import centiro.soapui.ui.JCaptionedComboBoxWithListener;
 import com.eviware.soapui.support.DocumentListenerAdapter;
@@ -40,15 +41,16 @@ public class ReadFileTestStepDesktopPanel extends ModelItemDesktopPanel<ReadFile
     public ReadFileTestStepDesktopPanel(ReadFileTestStep modelItem)
     {
         super( modelItem );
-        buildUI();
+        buildUI(modelItem);
     }
 
-    private void buildUI()
+    private void buildUI(ReadFileTestStep modelItem)
     {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JComponent sourceFileRow = createSourceFileRow();
         sourceFileRow.setAlignmentX(Component.LEFT_ALIGNMENT);
-        add(sourceFileRow);
+        add(ToolbarHelper.addRunTestStepToolBar(modelItem,"Run read file test step", sourceFileRow));
+
     }
 
     public JComponent createSourceFileRow()

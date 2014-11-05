@@ -17,6 +17,8 @@
 
 package centiro.soapui.teststeps.io.writefile;
 
+import centiro.soapui.teststeps.base.RunTestStepAction;
+import centiro.soapui.teststeps.base.ToolbarHelper;
 import centiro.soapui.ui.ComponentFactory;
 import centiro.soapui.ui.JCaptionedComboBoxWithListener;
 import com.eviware.soapui.support.DocumentListenerAdapter;
@@ -46,18 +48,17 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
     public WriteFileTestStepDesktopPanel(WriteFileTestStep modelItem)
 	{
         super( modelItem );
-        buildUI();
+        buildUI(modelItem);
     }
 
-    private void buildUI()
+    private void buildUI(WriteFileTestStep modelItem)
     {
         setLayout(new BorderLayout());
         JComponent contentRow = createContentRow();
         JComponent targetPathRow = createTargetPathRow();
         add(contentRow, BorderLayout.CENTER);
         add(targetPathRow,BorderLayout.SOUTH);
-
-
+        add(ToolbarHelper.createRunTestStepToolbar(modelItem,"Run write file test step"), BorderLayout.NORTH);
     }
 
     private JComponent createContentRow() {
@@ -79,11 +80,13 @@ public class WriteFileTestStepDesktopPanel extends ModelItemDesktopPanel<WriteFi
                 getModelItem().setPropertyAndNotifyChange(WriteFileTestStep.CONTENTS, contentField.getText());
             }
         } );
-        contentField.setPreferredSize(new Dimension(400, 400));
         contentField.setBorder(new LineBorder(Color.BLACK));
         PropertyExpansionPopupListener.enable(contentField, getModelItem());
 
-        contentPanel.add(contentField, BorderLayout.CENTER);
+        JScrollPane scroll = new JScrollPane (contentField,
+                JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
+        contentPanel.add(scroll, BorderLayout.CENTER);
 
         return contentPanel;
 

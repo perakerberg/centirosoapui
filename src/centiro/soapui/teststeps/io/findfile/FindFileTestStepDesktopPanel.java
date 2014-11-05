@@ -17,6 +17,7 @@
 
 package centiro.soapui.teststeps.io.findfile;
 
+import centiro.soapui.teststeps.base.ToolbarHelper;
 import centiro.soapui.ui.ComponentFactory;
 import centiro.soapui.ui.JCaptionedComboBoxWithListener;
 import com.eviware.soapui.support.DocumentListenerAdapter;
@@ -47,15 +48,16 @@ public class FindFileTestStepDesktopPanel extends ModelItemDesktopPanel<FindFile
     public FindFileTestStepDesktopPanel(FindFileTestStep modelItem)
     {
         super( modelItem );
-        buildUI();
+        buildUI(modelItem);
     }
 
-    private void buildUI()
+    private void buildUI(FindFileTestStep modelItem)
     {
         setLayout(new BorderLayout());
-        add(createSourcesRow(), BorderLayout.NORTH);
+        JComponent sources =  createSourcesRow();
         add(createSettingsRow(), BorderLayout.CENTER);
         add(createFileContainsRow(), BorderLayout.SOUTH);
+        add(ToolbarHelper.addRunTestStepToolBar(modelItem, "Run find file test step",sources),BorderLayout.NORTH);
     }
 
     public JComponent createSourcesRow()

@@ -17,6 +17,7 @@
 
 package centiro.soapui.teststeps.generate.identifier;
 
+import centiro.soapui.teststeps.base.ToolbarHelper;
 import com.eviware.soapui.support.DocumentListenerAdapter;
 import com.eviware.soapui.support.components.JUndoableTextField;
 import com.eviware.soapui.support.propertyexpansion.PropertyExpansionPopupListener;
@@ -36,14 +37,16 @@ public class GenerateIdentifierDesktopPanel extends ModelItemDesktopPanel<Genera
     public GenerateIdentifierDesktopPanel(GenerateIdentifierTestStep modelItem)
     {
         super( modelItem );
-        buildUI();
+        buildUI(modelItem);
     }
 
-    private void buildUI()
+    private void buildUI(GenerateIdentifierTestStep modelItem)
     {
         setLayout(new BorderLayout());
-        add(createFormatRow(), BorderLayout.NORTH);
+        JComponent formatRow = createFormatRow();
         add(createLengthRow(), BorderLayout.CENTER);
+        add(ToolbarHelper.addRunTestStepToolBar(modelItem,"Run generate identifier test step", formatRow), BorderLayout.NORTH);
+
     }
 
     public JComponent createFormatRow()

@@ -102,7 +102,6 @@ public class FindFileTestStep extends TestStepBase {
             waitedMilliseconds+=200;
             Thread.sleep(200);
         }
-
         if (!found)
         {
             String secondaryPath = expandPropertyValue(context, SECONDARY_SOURCE_PATH);
@@ -122,6 +121,7 @@ public class FindFileTestStep extends TestStepBase {
     }
 
     private Boolean matchingFileExists(TestCaseRunContext context, String encoding, File folder) {
+
         return folder.listFiles(new StringContainsFileFilter(
                             expandPropertyValue(context, FILE_CONTAINS).split("\\n"),encoding,
                             expandPropertyValue(context, FILEMASK))).length>0;
